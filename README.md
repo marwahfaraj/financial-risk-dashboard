@@ -21,9 +21,9 @@ The Financial Risk Dashboard is a state-of-the-art tool designed for retail inve
 
 ### **Data Sources**:
 
-- **Yahoo Finance API**: Fetch historical stock prices, dividends, and financial metrics.
-- **Quandl API**: Provides data on stocks, mutual funds, and economic indicators.
-- **Morningstar API**: Supplies ETF, mutual fund, and stock data.
+- **Yahoo Finance API**:
+  - Fetches historical stock prices, dividends, and financial metrics.
+  - Uses the `yfinance` Python library for seamless integration.
 
 ### **Data Processing**:
 

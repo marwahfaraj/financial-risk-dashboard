@@ -3,19 +3,29 @@ import pandas as pd
 import mysql.connector
 from dotenv import load_dotenv
 
-# Define raw and processed data directories
+# Define directories
 RAW_DATA_DIR = "../data/raw/"
 PROCESSED_DATA_DIR = "../data/processed/"
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
-load_dotenv()
 
-# Database connection details
+# Load environment variables
+load_dotenv()
 DB_CONFIG = {
     "host": os.getenv("DB_HOST"),
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "database": os.getenv("DB_NAME")
 }
+
+def execute_query(cursor, query, params=None, fetch_result=False):
+    """Helper function to execute a query and optionally fetch results."""
+    try:
+        cursor.execute(query, params or ())
+        if fetch_result:
+            return cursor.fetchall()
+    except Exception as e:
+        print(f"Error executing query: {e}")
+        return None
 
 def save_to_database(data, stock_symbol):
     """Save processed data to MySQL database."""
@@ -24,17 +34,52 @@ def save_to_database(data, stock_symbol):
         connection = mysql.connector.connect(**DB_CONFIG)
         cursor = connection.cursor()
 
-        # Drop rows where Date is missing or invalid
-        data = data.dropna(subset=["Date"])
+        # Ensure the company exists in the companies table
+        company_details = {
+            "AAPL": ("Apple Inc.", "Technology", "Consumer electronics."),
+            "MSFT": ("Microsoft Corp.", "Technology", "Enterprise software."),
+            "GOOGL": ("Alphabet Inc.", "Technology", "Search and advertising."),
+            "META": ("Meta Platforms", "Technology", "Social media and VR.")
+        }
+        if stock_symbol in company_details:
+            name, sector, description = company_details[stock_symbol]
+            execute_query(cursor, """
+                INSERT INTO companies (ticker, name, sector, description)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                name = VALUES(name),
+                sector = VALUES(sector),
+                description = VALUES(description)
+            """, (stock_symbol, name, sector, description))
+            connection.commit()
 
-        for index, row in data.iterrows():
+            # Link the company to a category
+            category_id = execute_query(cursor, "SELECT category_id FROM categories WHERE name = %s", (sector,), fetch_result=True)
+            if not category_id:
+                execute_query(cursor, """
+                    INSERT INTO categories (name)
+                    VALUES (%s)
+                    ON DUPLICATE KEY UPDATE name = VALUES(name)
+                """, (sector,))
+                connection.commit()
+                category_id = execute_query(cursor, "SELECT category_id FROM categories WHERE name = %s", (sector,), fetch_result=True)
+
+            if category_id:
+                category_id = category_id[0][0]
+                execute_query(cursor, """
+                    INSERT INTO stock_categories (ticker, category_id)
+                    VALUES (%s, %s)
+                    ON DUPLICATE KEY UPDATE category_id = VALUES(category_id)
+                """, (stock_symbol, category_id))
+                connection.commit()
+
+        # Process and save data into stock_metrics
+        data = data.dropna(subset=["Date"])
+        for _, row in data.iterrows():
             if not isinstance(row["Date"], pd.Timestamp):
-                print(f"Skipping row with invalid date: {row}")
                 continue
             date_value = row["Date"].strftime('%Y-%m-%d')
-
-            print(f"Inserting data for {stock_symbol} on {date_value}...")
-            cursor.execute("""
+            execute_query(cursor, """
                 INSERT INTO stock_metrics (ticker, date, close_price, daily_return, roi, volatility, sharpe_ratio)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
@@ -61,61 +106,44 @@ def save_to_database(data, stock_symbol):
             cursor.close()
             connection.close()
 
-
 def process_stock_data(file_name):
     """Process raw stock data and calculate financial metrics."""
     try:
-        # Load raw data
         file_path = os.path.join(RAW_DATA_DIR, file_name)
         print(f"Processing {file_path}...")
         data = pd.read_csv(file_path, index_col="Date", parse_dates=True)
 
-        # Ensure relevant columns exist
-        required_columns = ["Close"]
-        for column in required_columns:
-            if column not in data.columns:
-                raise ValueError(f"Missing required column: {column}")
+        # Ensure required columns exist
+        if "Close" not in data.columns:
+            raise ValueError("Missing required column: Close")
 
-        # Drop rows with missing values in the Close column
+        # Drop rows with missing data in the 'Close' column
         data = data.dropna(subset=["Close"])
 
-        # Calculate daily returns
-        data["Daily Return"] = data["Close"].pct_change()
-
-        # Calculate moving averages (20-day and 50-day)
-        data["20-Day MA"] = data["Close"].rolling(window=20, min_periods=1).mean()
-        data["50-Day MA"] = data["Close"].rolling(window=50, min_periods=1).mean()
-
-        # Calculate volatility (standard deviation of daily returns over 20 days)
-        data["Volatility"] = data["Daily Return"].rolling(window=20, min_periods=1).std()
-
-        # Calculate ROI (Return on Investment)
-        data["ROI"] = data["Close"].pct_change()  # Change logic if needed for ROI definition
-
-        # Calculate Sharpe Ratio
+        # Calculate financial metrics
+        data["Daily Return"] = data["Close"].pct_change()  # Daily return calculation
+        data["Volatility"] = data["Daily Return"].rolling(window=20, min_periods=1).std()  # Volatility
+        data["ROI"] = (data["Close"] / data["Close"].shift(1)) - 1  # Return on Investment
         rolling_mean = data["Daily Return"].rolling(window=20, min_periods=1).mean()
         rolling_std = data["Daily Return"].rolling(window=20, min_periods=1).std()
-        data["Sharpe Ratio"] = rolling_mean / rolling_std
+        data["Sharpe Ratio"] = rolling_mean / rolling_std  # Sharpe ratio
 
-        # Handle any NaN values in calculated columns
-        data.fillna(0, inplace=True)
+        # Handle missing or insufficient data for rolling calculations
+        data.fillna(method="bfill", inplace=True)  # Backfill missing data
+        data.fillna(method="ffill", inplace=True)  # Forward fill as fallback
 
         # Save processed data
         processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_{file_name}")
         data.to_csv(processed_file_path)
         print(f"Processed data saved to {processed_file_path}")
 
-        # Save to database
+        # Save data to database
         stock_symbol = file_name.split("_")[0]  # Extract stock symbol from file name
         save_to_database(data.reset_index(), stock_symbol)
     except Exception as e:
         print(f"Error processing {file_name}: {e}")
 
-
 if __name__ == "__main__":
-    # List all raw data files
     raw_files = os.listdir(RAW_DATA_DIR)
-
-    # Process each file
     for raw_file in raw_files:
         process_stock_data(raw_file)

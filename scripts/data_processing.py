@@ -28,7 +28,7 @@ def execute_query(cursor, query, params=None, fetch_result=False):
         return None
 
 def save_to_database(data, stock_symbol):
-    """Save processed data to MySQL database."""
+    """Save processed data to MySQL database and locally."""
     connection = None
     try:
         connection = mysql.connector.connect(**DB_CONFIG)
@@ -98,7 +98,12 @@ def save_to_database(data, stock_symbol):
                 row["Sharpe Ratio"]
             ))
         connection.commit()
-        print(f"Data for {stock_symbol} saved to database.")
+
+        # Save processed data to the 'data/processed' folder for visualization
+        processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_stock_metrics_{stock_symbol}.csv")
+        data.to_csv(processed_file_path, index=False)
+        print(f"Processed stock metrics for {stock_symbol} saved to {processed_file_path}.")
+
     except Exception as e:
         print(f"Error saving data for {stock_symbol} to database: {e}")
     finally:
@@ -133,17 +138,24 @@ def process_stock_data(file_name):
         data.fillna(method="ffill", inplace=True)  # Forward fill as fallback
 
         # Save processed data
-        processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_{file_name}")
-        data.to_csv(processed_file_path)
-        print(f"Processed data saved to {processed_file_path}")
-
-        # Save data to database
         stock_symbol = file_name.split("_")[0]  # Extract stock symbol from file name
         save_to_database(data.reset_index(), stock_symbol)
+        return data.reset_index()
     except Exception as e:
         print(f"Error processing {file_name}: {e}")
+        return pd.DataFrame()
 
 if __name__ == "__main__":
+    combined_data = []
     raw_files = os.listdir(RAW_DATA_DIR)
     for raw_file in raw_files:
-        process_stock_data(raw_file)
+        stock_data = process_stock_data(raw_file)
+        if not stock_data.empty:
+            combined_data.append(stock_data)
+
+    # Combine all processed stock data into a single DataFrame
+    if combined_data:
+        combined_data_df = pd.concat(combined_data, ignore_index=True)
+        combined_file_path = os.path.join(PROCESSED_DATA_DIR, "combined_stock_metrics.csv")
+        combined_data_df.to_csv(combined_file_path, index=False)
+        print(f"Combined stock metrics saved to {combined_file_path}.")

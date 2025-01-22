@@ -6,4 +6,5 @@ tableau-api-lib==0.3.0
 mysql-connector-python
 sqlalchemy
 python-dotenv
+sweetviz
 

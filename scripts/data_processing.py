@@ -125,6 +125,10 @@ def process_stock_data(file_name):
         # Drop rows with missing data in the 'Close' column
         data = data.dropna(subset=["Close"])
 
+        # Add the ticker column based on the file name
+        stock_symbol = file_name.split("_")[0]  # Extract stock symbol from file name
+        data['ticker'] = stock_symbol
+
         # Calculate financial metrics
         data["Daily Return"] = data["Close"].pct_change()  # Daily return calculation
         data["Volatility"] = data["Daily Return"].rolling(window=20, min_periods=1).std()  # Volatility
@@ -138,7 +142,6 @@ def process_stock_data(file_name):
         data.fillna(method="ffill", inplace=True)  # Forward fill as fallback
 
         # Save processed data
-        stock_symbol = file_name.split("_")[0]  # Extract stock symbol from file name
         save_to_database(data.reset_index(), stock_symbol)
         return data.reset_index()
     except Exception as e:

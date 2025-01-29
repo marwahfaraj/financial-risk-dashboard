@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/archa/financial-risk-dashboard/mlruns/972165522762232017/e007655837a94ddaacb7259f5d0c8467/artifacts
+end_time: 1738120034006
+entry_point_name: ''
+experiment_id: '972165522762232017'
+lifecycle_stage: active
+run_id: e007655837a94ddaacb7259f5d0c8467
+run_name: Decision Tree Regressor
+run_uuid: e007655837a94ddaacb7259f5d0c8467
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738120031985
+status: 3
+tags: []
+user_id: archa

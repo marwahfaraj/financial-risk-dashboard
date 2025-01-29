@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/archa/financial-risk-dashboard/mlruns/972165522762232017/c3e7c1a3c49143fb8695a474a429a5e6/artifacts
+end_time: 1738120023426
+entry_point_name: ''
+experiment_id: '972165522762232017'
+lifecycle_stage: active
+run_id: c3e7c1a3c49143fb8695a474a429a5e6
+run_name: Ridge Regression
+run_uuid: c3e7c1a3c49143fb8695a474a429a5e6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738120021394
+status: 3
+tags: []
+user_id: archa

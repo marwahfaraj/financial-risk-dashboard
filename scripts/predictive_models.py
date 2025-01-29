@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import mlflow
+import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
@@ -31,7 +33,7 @@ y = data[target]
 # Scale numerical features
 numerical_features = ["Close", "Volume", "Daily Return", "Volatility", "Sharpe Ratio"]
 scaler = StandardScaler()
-X[numerical_features] = scaler.fit_transform(X[numerical_features])
+X.loc[:, numerical_features] = scaler.fit_transform(X[numerical_features])
 
 # Encode categorical features
 encoder = LabelEncoder()
@@ -52,17 +54,30 @@ models = {
     "Support Vector Regressor (SVR)": SVR(kernel='linear'),
 }
 
+# Initialize MLflow
+mlflow.set_experiment("Stock ROI Prediction")
+
 # Evaluate models
 model_performance = []
 for model_name, model in models.items():
-    # Train the model
-    model.fit(X_train, y_train)
-    # Make predictions
-    y_pred = model.predict(X_test)
-    # Calculate performance metrics
-    r2 = r2_score(y_test, y_pred)
-    rmse = mean_squared_error(y_test, y_pred, squared=False)
-    model_performance.append((model_name, r2, rmse))
+    with mlflow.start_run(run_name=model_name):
+        # Train the model
+        model.fit(X_train, y_train)
+        
+        # Make predictions
+        y_pred = model.predict(X_test)
+        
+        # Calculate performance metrics
+        r2 = r2_score(y_test, y_pred)
+        mse = mean_squared_error(y_test, y_pred)  # Compute MSE
+        rmse = mse ** 0.5  # Calculate RMSE manually
+        model_performance.append((model_name, r2, rmse))
+        
+        # Log parameters, metrics, and model
+        mlflow.log_param("model_name", model_name)
+        mlflow.log_metric("r2_score", r2)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.sklearn.log_model(model, model_name)
 
 # Convert performance metrics to a DataFrame
 performance_df = pd.DataFrame(model_performance, columns=["Model", "R-Squared", "RMSE"])

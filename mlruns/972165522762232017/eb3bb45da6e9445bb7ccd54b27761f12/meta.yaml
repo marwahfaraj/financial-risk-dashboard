@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/archa/financial-risk-dashboard/mlruns/972165522762232017/eb3bb45da6e9445bb7ccd54b27761f12/artifacts
+end_time: 1738120021391
+entry_point_name: ''
+experiment_id: '972165522762232017'
+lifecycle_stage: active
+run_id: eb3bb45da6e9445bb7ccd54b27761f12
+run_name: Linear Regression
+run_uuid: eb3bb45da6e9445bb7ccd54b27761f12
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738120017906
+status: 3
+tags: []
+user_id: archa

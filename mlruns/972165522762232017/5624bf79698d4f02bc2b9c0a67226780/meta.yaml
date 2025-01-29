@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/archa/financial-risk-dashboard/mlruns/972165522762232017/5624bf79698d4f02bc2b9c0a67226780/artifacts
+end_time: 1738120029814
+entry_point_name: ''
+experiment_id: '972165522762232017'
+lifecycle_stage: active
+run_id: 5624bf79698d4f02bc2b9c0a67226780
+run_name: Random Forest Regressor
+run_uuid: 5624bf79698d4f02bc2b9c0a67226780
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1738120027429
+status: 3
+tags: []
+user_id: archa

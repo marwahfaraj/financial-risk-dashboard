@@ -6,5 +6,15 @@ tableau-api-lib==0.3.0
 mysql-connector-python
 sqlalchemy
 python-dotenv
+<<<<<<< HEAD
 mlflow
 
+=======
+sweetviz
+matplotlib
+seaborn
+lazypredict
+xgboost
+lightgbm
+catboost
+>>>>>>> 304b3b09c622bd9b8b8b58a0ff646e4a9d813925

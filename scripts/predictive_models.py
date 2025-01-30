@@ -33,7 +33,7 @@ y = data[target]
 # Scale numerical features
 numerical_features = ["Close", "Volume", "Daily Return", "Volatility", "Sharpe Ratio"]
 scaler = StandardScaler()
-X.loc[:, numerical_features] = scaler.fit_transform(X[numerical_features])
+X.loc[:, numerical_features] = scaler.fit_transform(X[numerical_features]).astype(float)
 
 # Encode categorical features
 encoder = LabelEncoder()

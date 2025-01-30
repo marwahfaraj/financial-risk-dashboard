@@ -10,6 +10,12 @@ from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score
+import subprocess
+from mlflow.models.signature import infer_signature
+
+# Start MLflow UI automatically
+mlflow_ui_command = ["mlflow", "ui", "--host", "127.0.0.1", "--port", "5000"]
+subprocess.Popen(mlflow_ui_command)
 
 # Paths
 PROCESSED_DATA_DIR = "../data/processed/"
@@ -30,14 +36,18 @@ target = "ROI"
 X = data[features]
 y = data[target]
 
+# Handle missing values
+X = X.fillna(0)
+
 # Scale numerical features
 numerical_features = ["Close", "Volume", "Daily Return", "Volatility", "Sharpe Ratio"]
 scaler = StandardScaler()
 X.loc[:, numerical_features] = scaler.fit_transform(X[numerical_features]).astype(float)
 
-# Encode categorical features
+# Convert integer columns to float to avoid schema enforcement issues
+X["ticker"] = X["ticker"].astype(str)  # Ensure it's a string for encoding
 encoder = LabelEncoder()
-X["ticker"] = encoder.fit_transform(X["ticker"])
+X["ticker"] = encoder.fit_transform(X["ticker"]).astype(float)
 
 # Train-Test Split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -77,7 +87,13 @@ for model_name, model in models.items():
         mlflow.log_param("model_name", model_name)
         mlflow.log_metric("r2_score", r2)
         mlflow.log_metric("rmse", rmse)
-        mlflow.sklearn.log_model(model, model_name)
+        
+        # Infer signature and input example
+        signature = infer_signature(X_train, model.predict(X_train))
+        input_example = X_train.iloc[:1]
+
+        # Log the model with signature and input example
+        mlflow.sklearn.log_model(model, model_name, signature=signature, input_example=input_example)
 
 # Convert performance metrics to a DataFrame
 performance_df = pd.DataFrame(model_performance, columns=["Model", "R-Squared", "RMSE"])

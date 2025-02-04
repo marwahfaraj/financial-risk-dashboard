@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: financial-risk-dashboard
+Version: 1.0.0
+Summary: A financial risk dashboard with ML models and Docker integration
+Author: Archana Suresh Patil, Marwah Faraj
+Project-URL: Source, https://github.com/marwahfaraj/financial-risk-dashboard
+Classifier: Programming Language :: Python :: 3.8
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8

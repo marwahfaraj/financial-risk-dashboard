@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import mysql.connector
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 
 # Define directories
 RAW_DATA_DIR = "../data/raw/"
@@ -27,53 +28,14 @@ def execute_query(cursor, query, params=None, fetch_result=False):
         print(f"Error executing query: {e}")
         return None
 
-def save_to_database(data, stock_symbol):
-    """Save processed data to MySQL database and locally."""
+### PROCESS STOCK DATA AND SAVE TO DATABASE ###
+def save_stock_data_to_db(data, stock_symbol):
+    """Save processed stock data to the MySQL database."""
     connection = None
     try:
         connection = mysql.connector.connect(**DB_CONFIG)
         cursor = connection.cursor()
 
-        # Ensure the company exists in the companies table
-        company_details = {
-            "AAPL": ("Apple Inc.", "Technology", "Consumer electronics."),
-            "MSFT": ("Microsoft Corp.", "Technology", "Enterprise software."),
-            "GOOGL": ("Alphabet Inc.", "Technology", "Search and advertising."),
-            "META": ("Meta Platforms", "Technology", "Social media and VR.")
-        }
-        if stock_symbol in company_details:
-            name, sector, description = company_details[stock_symbol]
-            execute_query(cursor, """
-                INSERT INTO companies (ticker, name, sector, description)
-                VALUES (%s, %s, %s, %s)
-                ON DUPLICATE KEY UPDATE
-                name = VALUES(name),
-                sector = VALUES(sector),
-                description = VALUES(description)
-            """, (stock_symbol, name, sector, description))
-            connection.commit()
-
-            # Link the company to a category
-            category_id = execute_query(cursor, "SELECT category_id FROM categories WHERE name = %s", (sector,), fetch_result=True)
-            if not category_id:
-                execute_query(cursor, """
-                    INSERT INTO categories (name)
-                    VALUES (%s)
-                    ON DUPLICATE KEY UPDATE name = VALUES(name)
-                """, (sector,))
-                connection.commit()
-                category_id = execute_query(cursor, "SELECT category_id FROM categories WHERE name = %s", (sector,), fetch_result=True)
-
-            if category_id:
-                category_id = category_id[0][0]
-                execute_query(cursor, """
-                    INSERT INTO stock_categories (ticker, category_id)
-                    VALUES (%s, %s)
-                    ON DUPLICATE KEY UPDATE category_id = VALUES(category_id)
-                """, (stock_symbol, category_id))
-                connection.commit()
-
-        # Process and save data into stock_metrics
         data = data.dropna(subset=["Date"])
         for _, row in data.iterrows():
             if not isinstance(row["Date"], pd.Timestamp):
@@ -99,18 +61,84 @@ def save_to_database(data, stock_symbol):
             ))
         connection.commit()
 
-        # Save processed data to the 'data/processed' folder for visualization
-        processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_stock_metrics_{stock_symbol}.csv")
-        data.to_csv(processed_file_path, index=False)
-        print(f"Processed stock metrics for {stock_symbol} saved to {processed_file_path}.")
-
     except Exception as e:
-        print(f"Error saving data for {stock_symbol} to database: {e}")
+        print(f"Error saving stock data for {stock_symbol} to database: {e}")
     finally:
         if connection and connection.is_connected():
             cursor.close()
             connection.close()
 
+### PROCESS CONSUMER COMPLAINTS DATA AND SAVE TO DATABASE ###
+def save_consumer_complaints_to_db(nrows=None):
+    """Save consumer complaints data to the MySQL database efficiently."""
+    connection = None
+    try:
+        connection = mysql.connector.connect(**DB_CONFIG)
+        cursor = connection.cursor()
+
+        file_path = os.path.join(RAW_DATA_DIR, "complaints.csv")
+        print(f"Processing complaints from {file_path}...")
+
+        # Read CSV and parse the date
+        complaints = pd.read_csv(file_path, parse_dates=["Date received"], low_memory=False, nrows=nrows)
+
+        # Debugging: Print total number of records before filtering
+        print(f"Total complaints before filtering: {len(complaints)}")
+
+        # Filter last 6 months
+        six_months_ago = datetime.today() - timedelta(days=180)
+        complaints = complaints[complaints["Date received"] >= six_months_ago]
+
+        # Debugging: Print number of complaints after filtering
+        print(f"Complaints from last 6 months: {len(complaints)}")
+
+        # Drop missing values
+        complaints = complaints.dropna(subset=["Date received", "Company", "Product"])
+
+        # Debugging: Print number of complaints after dropping missing values
+        print(f"Valid complaints after dropping missing values: {len(complaints)}")
+
+        # Rename columns to match MySQL table
+        complaints = complaints.rename(columns={
+            "Date received": "date_received",
+            "Company": "company",
+            "Product": "product",
+            "State": "state"
+        })
+
+        # Fill missing state values
+        complaints["state"] = complaints["state"].fillna("Unknown")
+
+        # ✅ Select only required columns to match SQL table schema
+        complaints = complaints[["date_received", "company", "product", "state"]]
+
+        # Convert to list of tuples for MySQL bulk insert
+        values = list(complaints.itertuples(index=False, name=None))
+
+        # Debugging: Print first 5 values to check format
+        print(f"First 5 complaint records to insert: {values[:5]}")
+
+        if values:
+            query = """
+                INSERT INTO consumer_complaints (date_received, company, product, state)
+                VALUES (%s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE product = VALUES(product), state = VALUES(state)
+            """
+            cursor.executemany(query, values)
+            connection.commit()
+            print(f"Successfully saved {len(values)} consumer complaints to the database.")
+        else:
+            print("⚠ No valid complaints found to insert.")
+
+    except Exception as e:
+        print(f"Error saving consumer complaints to database: {e}")
+    finally:
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
+
+
+### PROCESS RAW STOCK DATA FILES ###
 def process_stock_data(file_name):
     """Process raw stock data and calculate financial metrics."""
     try:
@@ -118,47 +146,29 @@ def process_stock_data(file_name):
         print(f"Processing {file_path}...")
         data = pd.read_csv(file_path, index_col="Date", parse_dates=True)
 
-        # Ensure required columns exist
         if "Close" not in data.columns:
             raise ValueError("Missing required column: Close")
 
-        # Drop rows with missing data in the 'Close' column
         data = data.dropna(subset=["Close"])
-
-        # Add the ticker column based on the file name
-        stock_symbol = file_name.split("_")[0]  # Extract stock symbol from file name
+        stock_symbol = file_name.split("_")[0]
         data['ticker'] = stock_symbol
 
-        # Calculate financial metrics
-        data["Daily Return"] = data["Close"].pct_change()  # Daily return calculation
-        data["Volatility"] = data["Daily Return"].rolling(window=20, min_periods=1).std()  # Volatility
-        data["ROI"] = (data["Close"] / data["Close"].shift(1)) - 1  # Return on Investment
-        rolling_mean = data["Daily Return"].rolling(window=20, min_periods=1).mean()
-        rolling_std = data["Daily Return"].rolling(window=20, min_periods=1).std()
-        data["Sharpe Ratio"] = rolling_mean / rolling_std  # Sharpe ratio
+        data["Daily Return"] = data["Close"].pct_change()
+        data["Volatility"] = data["Daily Return"].rolling(window=20, min_periods=1).std()
+        data["ROI"] = (data["Close"] / data["Close"].shift(1)) - 1
+        data["Sharpe Ratio"] = data["Daily Return"].rolling(window=20, min_periods=1).mean() / data["Volatility"]
 
-        # Handle missing or insufficient data for rolling calculations
-        data.fillna(method="bfill", inplace=True)  # Backfill missing data
-        data.fillna(method="ffill", inplace=True)  # Forward fill as fallback
+        data = data.bfill().ffill()
 
-        # Save processed data
-        save_to_database(data.reset_index(), stock_symbol)
+        save_stock_data_to_db(data.reset_index(), stock_symbol)
         return data.reset_index()
     except Exception as e:
         print(f"Error processing {file_name}: {e}")
         return pd.DataFrame()
 
 if __name__ == "__main__":
-    combined_data = []
-    raw_files = os.listdir(RAW_DATA_DIR)
-    for raw_file in raw_files:
-        stock_data = process_stock_data(raw_file)
-        if not stock_data.empty:
-            combined_data.append(stock_data)
+    for file in os.listdir(RAW_DATA_DIR):
+        if file.endswith("_yahoo.csv"):
+            process_stock_data(file)
 
-    # Combine all processed stock data into a single DataFrame
-    if combined_data:
-        combined_data_df = pd.concat(combined_data, ignore_index=True)
-        combined_file_path = os.path.join(PROCESSED_DATA_DIR, "combined_stock_metrics.csv")
-        combined_data_df.to_csv(combined_file_path, index=False)
-        print(f"Combined stock metrics saved to {combined_file_path}.")
+    save_consumer_complaints_to_db(nrows=10000)

@@ -1,13 +1,10 @@
 import os
 import pandas as pd
 import yfinance as yf
-import sweetviz as sv
 
 # Create directories if they don't exist
 RAW_DATA_DIR = "../data/raw/"
-PROCESSED_DATA_DIR = "../data/processed/"
 os.makedirs(RAW_DATA_DIR, exist_ok=True)
-os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
 def fetch_yahoo_finance_data(ticker, period="1y"):
     """Fetch historical stock data from Yahoo Finance."""
@@ -21,26 +18,15 @@ def fetch_yahoo_finance_data(ticker, period="1y"):
     except Exception as e:
         print(f"Error fetching Yahoo Finance data for {ticker}: {e}")
 
-def generate_eda_report(file_name):
-    """Generate an EDA report using Sweetviz."""
-    try:
-        file_path = os.path.join(RAW_DATA_DIR, file_name)
-        data = pd.read_csv(file_path)
-        report = sv.analyze(data)
-        report_file = os.path.join(PROCESSED_DATA_DIR, f"{file_name}_eda_report.html")
-        report.show_html(report_file)
-        print(f"EDA report generated: {report_file}")
-    except Exception as e:
-        print(f"Error generating EDA report for {file_name}: {e}")
-
 if __name__ == "__main__":
-    # Fetch data from Yahoo Finance
-    fetch_yahoo_finance_data("AAPL", period="1y")
-    fetch_yahoo_finance_data("MSFT", period="1y")
-    fetch_yahoo_finance_data("GOOGL", period="1y")
-    fetch_yahoo_finance_data("META", period="1y")
+    # Fetch stock data
+    tickers = ["AAPL", "MSFT", "GOOGL", "META"]
+    for ticker in tickers:
+        fetch_yahoo_finance_data(ticker, period="1y")
 
-    # Generate EDA reports for fetched data
-    raw_files = os.listdir(RAW_DATA_DIR)
-    for raw_file in raw_files:
-        generate_eda_report(raw_file)
+    # Save Consumer Complaints file to raw data (Assume it's already downloaded)
+    consumer_complaints_file = "../data/raw/complaints.csv"
+    if os.path.exists(consumer_complaints_file):
+        print(f"Consumer complaints data already saved at: {consumer_complaints_file}")
+    else:
+        print("Please download the Consumer Complaints file and save it to '../data/raw/'")

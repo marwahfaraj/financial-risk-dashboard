@@ -15,5 +15,6 @@ catboost
 mlflow
 docker
 python-terrafile
-
+fuzzywuzzy
+python-Levenshtein
 -e .

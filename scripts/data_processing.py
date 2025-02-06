@@ -73,7 +73,7 @@ def save_to_database(data, stock_symbol):
 
         processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_stock_metrics_{stock_symbol}.csv")
         data.to_csv(processed_file_path, index=False)
-        print(f" Processed stock metrics for {stock_symbol} saved to {processed_file_path}.")
+        print(f"Processed stock metrics for {stock_symbol} saved to {processed_file_path}.")
 
     except Exception as e:
         print(f"Error saving data for {stock_symbol}: {e}")
@@ -101,6 +101,9 @@ def save_consumer_complaints_to_raw(nrows=None):
         # Fill NaN values with "Unknown"
         complaints = complaints.fillna("Unknown")
 
+        # Validate and truncate 'state' values to a maximum of 50 characters
+        complaints["state"] = complaints["state"].apply(lambda x: str(x)[:50] if len(str(x)) > 50 else x)
+
         # Select only relevant columns
         complaints = complaints[["date_received", "company", "product", "state"]]
 
@@ -108,7 +111,7 @@ def save_consumer_complaints_to_raw(nrows=None):
         values = list(complaints.itertuples(index=False, name=None))
 
         for row in values[:5]:  # Print first 5 rows for debugging
-            print(f" Fixed row for insertion: {row}")
+            print(f"Fixed row for insertion: {row}")
 
         if values:
             query = """
@@ -118,7 +121,7 @@ def save_consumer_complaints_to_raw(nrows=None):
             """
             cursor.executemany(query, values)
             connection.commit()
-            print(f" Successfully saved {len(values)} raw consumer complaints to the database.")
+            print(f"Successfully saved {len(values)} raw consumer complaints to the database.")
         else:
             print("⚠ No valid complaints found to insert.")
 
@@ -168,7 +171,7 @@ if __name__ == "__main__":
     if combined_data:
         combined_data_df = pd.concat(combined_data, ignore_index=True)
         combined_data_df.to_csv(os.path.join(PROCESSED_DATA_DIR, "combined_stock_metrics.csv"), index=False)
-        print(f" Combined stock metrics saved.")
+        print(f"Combined stock metrics saved.")
 
     save_consumer_complaints_to_raw(nrows=10000)
     subprocess.run(f"mysql -u {DB_CONFIG['user']} -p{DB_CONFIG['password']} {DB_CONFIG['database']} < {os.path.join(SQL_SCRIPTS_DIR, 'process_consumer_complaints.sql')}", shell=True)

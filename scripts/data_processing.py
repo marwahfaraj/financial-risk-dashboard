@@ -71,9 +71,14 @@ def save_to_database(data, stock_symbol):
             """, (stock_symbol, date_value, row["Close"], row["Daily Return"], row["ROI"], row["Volatility"], row["Sharpe Ratio"]))
         connection.commit()
 
+        # Add ticker column to processed data
+        data["ticker"] = stock_symbol
+
         processed_file_path = os.path.join(PROCESSED_DATA_DIR, f"processed_stock_metrics_{stock_symbol}.csv")
         data.to_csv(processed_file_path, index=False)
         print(f"Processed stock metrics for {stock_symbol} saved to {processed_file_path}.")
+
+        return data
 
     except Exception as e:
         print(f"Error saving data for {stock_symbol}: {e}")
@@ -154,8 +159,7 @@ def process_stock_data(file_name):
         data.ffill(inplace=True)
 
         stock_symbol = file_name.split("_")[0]
-        save_to_database(data.reset_index(), stock_symbol)
-        return data.reset_index()
+        return save_to_database(data.reset_index(), stock_symbol)
     except Exception as e:
         print(f"Error processing {file_name}: {e}")
         return pd.DataFrame()

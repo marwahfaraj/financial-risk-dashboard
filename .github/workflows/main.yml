@@ -36,8 +36,8 @@ jobs:
 
       - name: Train Models & Generate Graphs
         run: |
-          python scripts/predictive_models.py
-          python visualizations/generate_graphs.py
+          python financial_risk_dashboard/scripts/predictive_models.py
+          python financial_risk_dashboarvisualizations/generate_graphs.py
 
       - name: Upload Graphs as Artifacts
         uses: actions/upload-artifact@v4  

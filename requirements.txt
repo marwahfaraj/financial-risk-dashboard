@@ -14,8 +14,7 @@ lightgbm
 catboost
 mlflow
 docker
-python-terrafile
+terraform == 1.3.5
 fuzzywuzzy
 python-Levenshtein
-python-terrafile
 -e .

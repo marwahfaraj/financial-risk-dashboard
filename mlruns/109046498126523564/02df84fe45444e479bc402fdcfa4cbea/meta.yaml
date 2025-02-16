@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/mlruns/109046498126523564/02df84fe45444e479bc402fdcfa4cbea/artifacts
+end_time: 1739687654596
+entry_point_name: ''
+experiment_id: '109046498126523564'
+lifecycle_stage: active
+run_id: 02df84fe45444e479bc402fdcfa4cbea
+run_name: Random Forest Regressor
+run_uuid: 02df84fe45444e479bc402fdcfa4cbea
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739687652801
+status: 3
+tags: []
+user_id: marwahfaraj

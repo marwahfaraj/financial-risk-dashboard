@@ -5,3 +5,15 @@ financial_risk_dashboard.egg-info/SOURCES.txt
 financial_risk_dashboard.egg-info/dependency_links.txt
 financial_risk_dashboard.egg-info/requires.txt
 financial_risk_dashboard.egg-info/top_level.txt
+scripts/__init__.py
+scripts/data_collection.py
+scripts/data_processing.py
+scripts/predictive_models.py
+test/__init__.py
+test/test_anomaly_graph.py
+test/test_data_processing.py
+test/test_predictive_models.py
+test/test_visualizations.py
+visualizations/__init__.py
+visualizations/anomaly_graph.py
+visualizations/generate_graphs.py

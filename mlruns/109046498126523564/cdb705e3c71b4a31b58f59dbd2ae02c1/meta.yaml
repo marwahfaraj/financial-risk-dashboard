@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/mlruns/109046498126523564/cdb705e3c71b4a31b58f59dbd2ae02c1/artifacts
+end_time: 1739687952210
+entry_point_name: ''
+experiment_id: '109046498126523564'
+lifecycle_stage: active
+run_id: cdb705e3c71b4a31b58f59dbd2ae02c1
+run_name: ElasticNet Regression
+run_uuid: cdb705e3c71b4a31b58f59dbd2ae02c1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739687950910
+status: 3
+tags: []
+user_id: marwahfaraj

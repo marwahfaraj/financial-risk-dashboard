@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/mlruns/109046498126523564/2e77a954cf774480b91ae232df979f01/artifacts
+end_time: 1739688061621
+entry_point_name: ''
+experiment_id: '109046498126523564'
+lifecycle_stage: active
+run_id: 2e77a954cf774480b91ae232df979f01
+run_name: Gradient Boosting Regressor
+run_uuid: 2e77a954cf774480b91ae232df979f01
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739688059746
+status: 3
+tags: []
+user_id: marwahfaraj

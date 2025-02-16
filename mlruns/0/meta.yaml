@@ -1,6 +1,6 @@
-artifact_location: mlflow-artifacts:/0
-creation_time: 1737445304880
+artifact_location: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/mlruns/0
+creation_time: 1739686980792
 experiment_id: '0'
-last_update_time: 1737445304880
+last_update_time: 1739686980792
 lifecycle_stage: active
 name: Default

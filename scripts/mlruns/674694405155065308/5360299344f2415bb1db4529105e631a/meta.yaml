@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/scripts/mlruns/674694405155065308/5360299344f2415bb1db4529105e631a/artifacts
+end_time: 1739655207942
+entry_point_name: ''
+experiment_id: '674694405155065308'
+lifecycle_stage: active
+run_id: 5360299344f2415bb1db4529105e631a
+run_name: Linear Regression
+run_uuid: 5360299344f2415bb1db4529105e631a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739655206215
+status: 3
+tags: []
+user_id: marwahfaraj

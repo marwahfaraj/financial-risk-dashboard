@@ -1,10 +1,10 @@
 USE financial_dashboard;
 
--- Transfer valid complaints from raw table to final table with ticker mapping
-INSERT INTO consumer_complaints (date_received, ticker, company, product, state)
+-- Transfer valid complaints from raw table to final table with company_id mapping
+INSERT INTO consumer_complaints (date_received, company_id, company, product, state)
 SELECT
     raw.date_received,
-    companies.ticker,  -- Map ticker from companies table
+    companies.company_id, -- Map company_id from companies table
     raw.company,
     raw.product,
     raw.state

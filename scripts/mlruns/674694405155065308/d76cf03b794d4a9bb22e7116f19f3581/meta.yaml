@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/scripts/mlruns/674694405155065308/d76cf03b794d4a9bb22e7116f19f3581/artifacts
+end_time: 1739666090152
+entry_point_name: ''
+experiment_id: '674694405155065308'
+lifecycle_stage: active
+run_id: d76cf03b794d4a9bb22e7116f19f3581
+run_name: Lasso Regression
+run_uuid: d76cf03b794d4a9bb22e7116f19f3581
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739666088881
+status: 3
+tags: []
+user_id: marwahfaraj

@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/scripts/mlruns/674694405155065308/65143bb5262f4d25a3906118d7d84715/artifacts
+end_time: 1739656374440
+entry_point_name: ''
+experiment_id: '674694405155065308'
+lifecycle_stage: active
+run_id: 65143bb5262f4d25a3906118d7d84715
+run_name: Support Vector Regressor (SVR)
+run_uuid: 65143bb5262f4d25a3906118d7d84715
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739656373140
+status: 4
+tags: []
+user_id: marwahfaraj

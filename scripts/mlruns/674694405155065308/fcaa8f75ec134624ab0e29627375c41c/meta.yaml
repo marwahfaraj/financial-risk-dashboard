@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/scripts/mlruns/674694405155065308/fcaa8f75ec134624ab0e29627375c41c/artifacts
+end_time: 1739655210687
+entry_point_name: ''
+experiment_id: '674694405155065308'
+lifecycle_stage: active
+run_id: fcaa8f75ec134624ab0e29627375c41c
+run_name: Ridge Regression
+run_uuid: fcaa8f75ec134624ab0e29627375c41c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739655207942
+status: 3
+tags: []
+user_id: marwahfaraj

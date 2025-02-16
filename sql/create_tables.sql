@@ -4,7 +4,8 @@ USE financial_dashboard;
 
 -- Create companies table
 CREATE TABLE IF NOT EXISTS companies (
-    ticker VARCHAR(10) PRIMARY KEY,
+    company_id INT AUTO_INCREMENT PRIMARY KEY,
+    ticker VARCHAR(10),
     name VARCHAR(100) NOT NULL,
     sector VARCHAR(50),
     description TEXT
@@ -43,24 +44,20 @@ CREATE TABLE IF NOT EXISTS consumer_complaints_raw (
     date_received DATE NOT NULL,
     company VARCHAR(255) NOT NULL,
     product VARCHAR(255) NOT NULL,
-    state VARCHAR(10),
+    state VARCHAR(50),
     PRIMARY KEY (date_received, company, product)
 );
 
 -- Create consumer_complaints table
 CREATE TABLE IF NOT EXISTS consumer_complaints (
     date_received DATE NOT NULL,
-    ticker VARCHAR(10),
+    company_id INT,
     company VARCHAR(255) NOT NULL,
     product VARCHAR(255) NOT NULL,
-    state VARCHAR(10),
+    state VARCHAR(50),
     PRIMARY KEY (date_received, company, product),
-    FOREIGN KEY (ticker) REFERENCES companies(ticker) ON DELETE SET NULL
+    FOREIGN KEY (company_id) REFERENCES companies(company_id) ON DELETE SET NULL
 );
-
--- Alter state column length for raw and processed complaints
-ALTER TABLE consumer_complaints_raw MODIFY COLUMN state VARCHAR(50);
-ALTER TABLE consumer_complaints MODIFY COLUMN state VARCHAR(50);
 
 -- Insert default categories
 INSERT INTO categories (name)

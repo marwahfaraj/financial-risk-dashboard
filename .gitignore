@@ -2,4 +2,4 @@
 
 ./venv
 
-data/raw/complaints.csv
+financial_risk_dashboard/data/raw/complaints.csv

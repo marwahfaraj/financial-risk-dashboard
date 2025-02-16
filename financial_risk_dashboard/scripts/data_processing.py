@@ -6,9 +6,10 @@ from datetime import datetime, timedelta
 import subprocess
 
 # Define directories
-RAW_DATA_DIR = "../../data/raw/"
-PROCESSED_DATA_DIR = "../../data/processed/"
-SQL_SCRIPTS_DIR = "../../sql/"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RAW_DATA_DIR = os.path.join(BASE_DIR, "financial_risk_dashboard", "data", "raw")
+PROCESSED_DATA_DIR = os.path.join(BASE_DIR, "financial_risk_dashboard", "data", "processed")
+SQL_SCRIPTS_DIR = os.path.join(BASE_DIR, "financial_risk_dashboard", "sql")
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
 # Load environment variables
@@ -82,6 +83,7 @@ def save_to_database(data, stock_symbol):
 
     except Exception as e:
         print(f"Error saving data for {stock_symbol}: {e}")
+        return pd.DataFrame()  # Return an empty DataFrame on error
     finally:
         if connection and connection.is_connected():
             cursor.close()
@@ -162,7 +164,7 @@ def process_stock_data(file_name):
         return save_to_database(data.reset_index(), stock_symbol)
     except Exception as e:
         print(f"Error processing {file_name}: {e}")
-        return pd.DataFrame()
+        return pd.DataFrame()  # Return an empty DataFrame on error
 
 if __name__ == "__main__":
     combined_data = []

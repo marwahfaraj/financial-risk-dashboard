@@ -17,4 +17,5 @@ docker
 python-terrafile
 fuzzywuzzy
 python-Levenshtein
+python-terrafile
 -e .

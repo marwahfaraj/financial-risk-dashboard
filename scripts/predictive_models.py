@@ -16,6 +16,7 @@ from mlflow.models.signature import infer_signature
 # Paths
 RAW_DATA_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/raw/complaints.csv"
 PROCESSED_DATA_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/processed/combined_stock_metrics.csv"
+SAVED_PROCESSED_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/processed/processed_stock_metrics.csv"
 MODEL_DIR = "../models/"
 GRAPHS_DIR = "../graphs/"
 
@@ -50,6 +51,14 @@ complaints_df = pd.DataFrame({
 
 # Merge complaint data with stock data
 stock_data = stock_data.merge(complaints_df, on="ticker", how="left").fillna({"Complaint_Count": 0})
+
+# Save the merged dataset to use for anomaly analysis
+stock_data.to_csv(SAVED_PROCESSED_PATH, index=False)
+print(f"✅ Processed stock data with complaints saved to {SAVED_PROCESSED_PATH}")
+
+# Print debug information
+print(f"Columns in dataset after merging complaints: {stock_data.columns}")
+print(f"Complaint Count Value Distribution:\n{stock_data['Complaint_Count'].value_counts()}")
 
 # Feature Selection
 features = ["Close", "Daily Return", "Volatility", "Sharpe Ratio", "Complaint_Count", "ticker"]
@@ -164,4 +173,4 @@ plt.savefig(graph_path, dpi=300)
 plt.close()
 print(f"Model comparison graph saved to {graph_path}")
 
-print("Model evaluation complete with consumer complaints integrated and graph generated.")
+print("✅ Model evaluation complete with consumer complaints integrated and graph generated.")

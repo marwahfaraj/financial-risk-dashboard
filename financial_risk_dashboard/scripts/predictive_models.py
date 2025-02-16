@@ -13,23 +13,28 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.feature_selection import SelectKBest, f_regression
 from mlflow.models.signature import infer_signature
 
-# Paths
-RAW_DATA_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/raw/complaints.csv"
-PROCESSED_DATA_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/processed/combined_stock_metrics.csv"
-SAVED_PROCESSED_PATH = "/Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/data/processed/processed_stock_metrics.csv"
+# Define relative paths
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Root of the project
+RAW_DATA_PATH = os.path.join(BASE_DIR, "data", "raw", "complaints.csv")
+PROCESSED_DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "combined_stock_metrics.csv")
+SAVED_PROCESSED_PATH = os.path.join(BASE_DIR, "data", "processed", "processed_stock_metrics.csv")
 
-# Define absolute paths for models and graphs
-MODEL_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "models"))
-GRAPHS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "graphs"))
+# Define relative paths for models and graphs
+MODEL_DIR = os.path.join(BASE_DIR, "models")
+GRAPHS_DIR = os.path.join(BASE_DIR, "graphs")
 
 # Ensure directories exist
 os.makedirs(MODEL_DIR, exist_ok=True)
 os.makedirs(GRAPHS_DIR, exist_ok=True)
 
 # Load stock data
+if not os.path.exists(PROCESSED_DATA_PATH):
+    raise FileNotFoundError(f"Processed data file not found at {PROCESSED_DATA_PATH}. Ensure the data processing pipeline has run successfully.")
 stock_data = pd.read_csv(PROCESSED_DATA_PATH)
 
 # Load consumer complaints data
+if not os.path.exists(RAW_DATA_PATH):
+    raise FileNotFoundError(f"Raw data file not found at {RAW_DATA_PATH}. Ensure the file exists.")
 complaints_data = pd.read_csv(RAW_DATA_PATH, low_memory=False)
 
 # Convert company names to lowercase for uniformity

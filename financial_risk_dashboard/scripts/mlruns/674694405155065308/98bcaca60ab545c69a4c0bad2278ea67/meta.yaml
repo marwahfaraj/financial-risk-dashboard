@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/marwahfaraj/Desktop/ms_degree_application_and_doc/final_projects/507_final_project/financial-risk-dashboard/scripts/mlruns/674694405155065308/98bcaca60ab545c69a4c0bad2278ea67/artifacts
+end_time: 1739691321567
+entry_point_name: ''
+experiment_id: '674694405155065308'
+lifecycle_stage: active
+run_id: 98bcaca60ab545c69a4c0bad2278ea67
+run_name: Decision Tree Regressor
+run_uuid: 98bcaca60ab545c69a4c0bad2278ea67
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1739691320282
+status: 3
+tags: []
+user_id: marwahfaraj

@@ -45,7 +45,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Download Processed Data Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3 # Corrected: v3 instead of v2
         with:
           name: processed_data
           path: data/processed
@@ -60,15 +60,15 @@ jobs:
           path: graphs/
 
   deploy:
-    needs: model_training  # Correct needs dependency
+    needs: model_training
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Download Graphs Artifact
-        uses: actions/download-artifact@v2
+      - name: Download Graphs Artifact  # Download the correct artifact
+        uses: actions/download-artifact@v3 # Corrected: v3 instead of v2
         with:
-          name: graphs  # Correct artifact name
+          name: graphs  # Name of the artifact containing graphs
           path: graphs
       - name: Deploy to Server
         run: |

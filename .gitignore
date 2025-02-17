@@ -3,3 +3,5 @@
 ./venv
 
 financial_risk_dashboard/data/raw/complaints.csv
+
+.DS_Store

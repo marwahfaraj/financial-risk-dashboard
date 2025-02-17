@@ -32,7 +32,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          if [ -d "tests" ]; then  # Check if the tests directory exists
+          if [ -d "tests" ]; then
             pytest tests/
           else
             echo "No tests directory found. Skipping tests."
@@ -48,7 +48,13 @@ jobs:
         with:
           name: graphs
           path: graphs/
-      
+
+      - name: Upload Processed Data as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: processed_data
+          path: data/processed/combined_stock_metrics.csv # Upload the created file
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -62,7 +68,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Download Processed Data Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: processed_data
+          path: data/processed  # Download to the correct location
+
       - name: Deploy to Server
         run: |
           echo "Deploying the project..."
-          # Add actual deployment logic here (e.g., Terraform apply, Docker push, etc.)
+          # ... (Your deployment logic)

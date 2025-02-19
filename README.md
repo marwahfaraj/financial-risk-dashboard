@@ -10,10 +10,12 @@ A comprehensive analytical platform that tracks, evaluates, and visualizes finan
 
 1. [Introduction](#introduction)
 2. [Features](#features)
-3. [How to Run the Project](#how-to-run-the-project)
-4. [Folder Structure](#folder-structure)
-5. [Contributing](#contributing)
-6. [License](#license)
+3. [Machine Learning Model Training](#machine-learning-model-training)
+4. [Model Evaluation & Performance Tracking](#model-evaluation--performance-tracking)
+5. [Anomaly Detection & Risk Assessment](#anomaly-detection--risk-assessment)
+6. [How to Run the Project](#how-to-run-the-project)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## 🔹 Introduction
 

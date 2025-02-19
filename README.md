@@ -51,28 +51,6 @@ Effective data preprocessing ensures data quality and consistency for ROI predic
 
 This integration enables machine learning models to identify anomalous stock behavior influenced by market sentiment, supporting predictive modeling and real-time anomaly detection.
 
-### 📂 Folder Structure
-financial-risk-dashboard/
-│
-├── data/                        # Raw and processed datasets
-│   ├── raw/                     # Data retrieved from APIs
-│   ├── processed/               # Cleaned and structured datasets
-│   └── combined_stock_metrics.csv # Merged dataset for analysis
-│
-├── app/                         # Streamlit-based application
-│   ├── README.md                # Documentation for the application
-│   ├── financial_agent.py        # AI-powered financial analysis module
-│   ├── main.py                   # Primary entry point for the application
-│   └── playground.py             # Experimental and development scripts
-│
-├── infrastructure/               # Infrastructure as Code (IaC) setup
-│   ├── Dockerfile                # Docker configuration for containerization
-│   ├── docker-compose.yml        # Docker Compose setup for multi-container environments
-│   └── terraform/                # Terraform scripts for AWS infrastructure provisioning
-│
-├── README.md                     # Project documentation
-└── .gitignore                    # Version control exclusion rules
-
 ## 🏆 Machine Learning Model Training
 
 ### 📊 Models Implemented

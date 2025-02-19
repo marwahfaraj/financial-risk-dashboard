@@ -13,9 +13,10 @@ A comprehensive analytical platform that tracks, evaluates, and visualizes finan
 3. [Machine Learning Model Training](#machine-learning-model-training)
 4. [Model Evaluation & Performance Tracking](#model-evaluation--performance-tracking)
 5. [Anomaly Detection & Risk Assessment](#anomaly-detection--risk-assessment)
-6. [How to Run the Project](#how-to-run-the-project)
-7. [Contributing](#contributing)
-8. [License](#license)
+6. [Multi-Agent AI System](#multi-agent-ai-system)
+7. [How to Run the Project](#how-to-run-the-project)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## 🔹 Introduction
 

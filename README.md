@@ -52,3 +52,77 @@ Effective data preprocessing ensures data quality and consistency for ROI predic
 This integration enables machine learning models to identify anomalous stock behavior influenced by market sentiment, supporting predictive modeling and real-time anomaly detection.
 
 ### 📂 Folder Structure
+financial-risk-dashboard/
+│
+├── data/                        # Raw and processed datasets
+│   ├── raw/                     # Data retrieved from APIs
+│   ├── processed/               # Cleaned and structured datasets
+│   └── combined_stock_metrics.csv # Merged dataset for analysis
+│
+├── app/                         # Streamlit-based application
+│   ├── README.md                # Documentation for the application
+│   ├── financial_agent.py        # AI-powered financial analysis module
+│   ├── main.py                   # Primary entry point for the application
+│   └── playground.py             # Experimental and development scripts
+│
+├── infrastructure/               # Infrastructure as Code (IaC) setup
+│   ├── Dockerfile                # Docker configuration for containerization
+│   ├── docker-compose.yml        # Docker Compose setup for multi-container environments
+│   └── terraform/                # Terraform scripts for AWS infrastructure provisioning
+│
+├── README.md                     # Project documentation
+└── .gitignore                    # Version control exclusion rules
+
+## 🏆 Machine Learning Model Training
+
+### 📊 Models Implemented
+
+- **Linear Models**: Ridge Regression, Lasso Regression, and ElasticNet Regression.
+- **Tree-Based Models**: Decision Tree Regressor, Random Forest Regressor, and Gradient Boosting Regressor.
+
+### 🔍 Training & Testing Split
+
+- The dataset was split into **70% for training** and **30% for testing**.
+
+### 🎯 Hyperparameter Tuning
+
+- **RandomizedSearchCV** was applied to fine-tune key hyperparameters.
+
+## 📊 Model Evaluation & Performance Tracking
+
+- **R-Squared (R²) Score**: Measures variance in ROI.
+- **Root Mean Squared Error (RMSE)**: Measures prediction deviation.
+- **MLflow** integrated for experiment logging and hyperparameter tracking.
+
+## 🚨 Anomaly Detection & Risk Assessment
+
+- **Visualization-Based Detection**:
+  - **Box plots** of ROI distribution identified stocks with high variability.
+  - **3D scatter plots** mapped ROI, volatility, and complaint trends.
+
+- **Red-Flagging Criteria**:
+  - Stocks experiencing a **surge in consumer complaints** were flagged.
+  - **META and GOOGL** displayed heightened market instability.
+
+## 📌 How to Run the Project
+
+### Prerequisites
+
+Ensure that the following dependencies are installed:
+
+- Python (>=3.9)
+- Docker
+- Terraform
+- AWS CLI (configured with necessary credentials)
+- Tableau (for advanced data visualization)
+
+### Installation Steps
+
+```sh
+git clone https://github.com/your-username/financial-risk-dashboard.git
+cd financial-risk-dashboard
+python3 -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app/main.py
+

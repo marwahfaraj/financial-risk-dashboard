@@ -1,10 +1,12 @@
-# Financial Risk Dashboard 📊
+# 📊 Financial Risk Dashboard
 
-A comprehensive analytical platform that tracks, evaluates, and visualizes financial risks and key metrics for stocks, ETFs, and mutual funds, now enhanced with predictive insights using machine learning.
+A comprehensive analytical platform that tracks, evaluates, and visualizes financial risks and key metrics for stocks, ETFs, and mutual funds, enhanced with predictive insights using machine learning.
+
+## 🏷️ Technologies Used
 
 ![Python](https://img.shields.io/badge/Python-3.9-blue) ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue) ![Tableau](https://img.shields.io/badge/Tableau-✔️-orange) ![Docker](https://img.shields.io/badge/Docker-✔️-brightgreen) ![Terraform](https://img.shields.io/badge/Terraform-✔️-purple) ![Machine Learning](https://img.shields.io/badge/ML-✔️-yellow)
 
-## Table of Contents
+## 📖 Table of Contents
 
 1. [Introduction](#introduction)
 2. [Features](#features)
@@ -13,123 +15,40 @@ A comprehensive analytical platform that tracks, evaluates, and visualizes finan
 5. [Contributing](#contributing)
 6. [License](#license)
 
-## Introduction
+## 🔹 Introduction
 
-The Financial Risk Dashboard is a state-of-the-art tool designed for retail investors, analysts, and portfolio managers. It integrates real-time and historical financial data, advanced SQL transformations, and machine learning to deliver actionable insights into stock and mutual fund performance. Users can explore interactive dashboards built in Tableau, monitor real-time portfolio risks, and view predictive trends for informed decision-making.
+The **Financial Risk Dashboard** is a state-of-the-art tool designed for retail investors, analysts, and portfolio managers. It integrates real-time and historical financial data, advanced SQL transformations, and machine learning to deliver actionable insights into stock and mutual fund performance. Users can explore interactive dashboards built in Tableau, monitor real-time portfolio risks, and view predictive trends for informed decision-making.
 
-## Features 📊
+## 🚀 Features
 
-### **Data Sources**:
+### 📊 Data Sources
 
 - **Yahoo Finance API**:
-  - Fetches historical stock prices, dividends, and financial metrics.
+  - Fetches historical stock prices, returns, volatility, and Sharpe Ratios for stocks such as AAPL, MSFT, GOOGL, and META.
   - Uses the `yfinance` Python library for seamless integration.
+- **Consumer Complaint Database (data.gov)**:
+  - Provides insights into market risks and reputational issues based on consumer sentiment data.
+  - Enables analysis of complaint trends and their correlation with stock volatility and ROI.
+- **Relational MySQL Database**:
+  - Stores and links financial market data with consumer sentiment analysis for efficient querying and long-term trend analysis.
+  - Enhances financial risk assessment by integrating historical performance metrics with real-time sentiment-driven risks.
 
-### **Data Processing**:
+### 🛠️ Data Preprocessing
 
-- SQL transformations for key financial metrics:
-  - ROI, Volatility, Sharpe Ratio, and P/E Ratio.
-- Data stored in a relational MySQL database for efficiency.
+Effective data preprocessing ensures data quality and consistency for ROI prediction and financial risk assessment. This study applies data cleaning, normalization, aggregation, and integration techniques to prepare stock and consumer complaint data.
 
-### **Predictive Analysis**:
+- **Handling Missing Values**:
+  - Missing stock values are addressed using forward and backward filling techniques.
+  - Missing consumer complaint data is replaced with "Unknown."
 
-- Machine Learning Models:
-  - **Linear Regression**: ROI prediction.
-  - **Time Series Models** (ARIMA, Prophet): Trend forecasting.
-  - **Clustering**: Group stocks and ETFs by risk-return profiles.
-- Predicted metrics stored in the database and visualized in Tableau.
+- **Standardization & Normalization**:
+  - Date fields are standardized to `YYYY-MM-DD` format for consistency.
+  - Company names in complaints are normalized and mapped to stock tickers to resolve variations.
 
-### **Visualization**:
+- **Data Aggregation & Merging**:
+  - Consumer complaints are aggregated using a six-month rolling window to detect trends.
+  - Stock and complaint data are merged by ticker, linking financial metrics (closing price, returns, volatility) with sentiment indicators (complaint frequency, regulatory concerns).
 
-- Interactive dashboards in Tableau:
-  - Historical and predicted trends for key metrics.
-  - Risk-return analysis through clustering visualizations.
+This integration enables machine learning models to identify anomalous stock behavior influenced by market sentiment, supporting predictive modeling and real-time anomaly detection.
 
-### **Deployment**:
-
-- Automated using Docker and Terraform.
-- Scalable infrastructure ensures reliable real-time monitoring.
-
-## How to Run the Project
-
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/username/financial-risk-dashboard.git
-   cd financial-risk-dashboard
-
-   ```
-
-2. **Set Up the Environment**:
-
-- Install Python dependencies:
-
-```bash
-  pip install -r requirements.txt
-```
-
-- Configure .env file with your MySQL credentials and API keys.
-
-3. **Run Data Pipeline**:
-
-- Fetch raw data:
-
-```bash
-  python scripts/data_collection.py
-```
-
-- Process data and store it in the database:
-
-```bash
-python scripts/data_processing.py
-```
-
-4. **Train ML Models**:
-
-- Train models and generate predictions:
-
-```bash
-python scripts/predictive_models.py
-```
-
-5. **Visualize the Dashboard**:
-
-Open the Tableau workbook (visualizations/tableau_project.twbx) to view the interactive dashboard.
-
-## Folder Structure
-
-```plaintext
-financial-risk-dashboard/
-│
-├── data/                   # Raw and processed data files
-│   ├── raw/                # Raw data from APIs
-│   └── processed/          # Processed and cleaned data
-│       └── combined_stock_metrics.csv  # Combined dataset for analysis
-│
-├── graphs/                 # Folder for generated graphs
-│   └── *.png               # Graph images generated by the scripts
-│
-├── models/                 # Folder for saving trained ML models
-│   └── linear_regression_model.pkl     # Saved Linear Regression model
-│
-├── scripts/                # Python scripts for data collection, processing, and ML
-│   ├── data_collection.py  # Fetches data from APIs
-│   ├── data_processing.py  # Cleans and processes data
-│   └── predictive_models.py # Trains and evaluates ML models
-│
-├── sql/                    # SQL queries for data schema and transformations
-│   └── create_tables.sql   # Schema for relational database
-│
-├── visualizations/         # Tableau dashboard files and graph generation scripts
-│   ├── tableau_project.twbx # Tableau workbook for visualization
-│   └── generate_graphs.py  # Python script for generating graphs
-│
-├── infrastructure/         # Docker and Terraform files
-│   ├── Dockerfile          # Docker configuration
-│   ├── docker-compose.yml  # Docker Compose setup
-│   └── terraform/          # Terraform scripts for deployment
-│
-├── requirements.txt        # Python dependencies
-├── README.md               # Project overview and instructions
-└── .gitignore              # Files to ignore in version control
-```
+### 📂 Folder Structure

@@ -84,6 +84,32 @@ This integration enables machine learning models to identify anomalous stock beh
   - Stocks experiencing a **surge in consumer complaints** were flagged.
   - **META and GOOGL** displayed heightened market instability.
 
+## 🤖 Multi-Agent AI System
+
+This study introduces a Multi-Agent AI System designed to enhance financial market analysis by integrating real-time web search capabilities with structured financial data extraction. The system consists of two specialized agents:
+
+- **Web Search Agent**: Retrieves up-to-date market sentiment and news using the DuckDuckGo API.
+- **Finance AI Agent**: Analyzes stock trends and presents structured financial insights using YFinanceTools.
+
+The system follows a multi-agent framework where different agents communicate and collaborate to provide comprehensive financial analysis. User queries are processed independently by each agent, with responses aggregated into a structured output. 
+
+### 📊 Data Sources
+- **DuckDuckGo API**: Fetches real-time financial news and sentiment data.
+- **Yahoo Finance API**: Extracts stock price trends and key financial metrics.
+- **Groq Model API**: Processes and interprets financial insights using AI-driven language models.
+
+### 📈 Predictive Modeling
+The system utilizes:
+- **Groq Model** *(Mixtral-8x7b-32768 or Deepseek-R1-Distill-Llama-70b)* for efficient processing.
+- **ElasticNet Regression** for predictive financial modeling.
+
+### 🛠️ Implementation
+- Developed in **Python**, utilizing:
+  - `phi`, `yfinance`, `dotenv`, and `streamlit` for AI integration.
+  - **Tableau** for interactive stock analysis visualization.
+
+This approach ensures a holistic, real-time, and structured financial outlook, empowering better investment decisions through AI-driven insights.
+
 ## 📌 How to Run the Project
 
 ### Prerequisites

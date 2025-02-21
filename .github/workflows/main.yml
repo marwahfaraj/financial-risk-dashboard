@@ -45,7 +45,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Download Processed Data Artifact
-        uses: actions/download-artifact@v3 # Corrected: v3 instead of v2
+        uses: actions/download-artifact@v4 # Updated to v4
         with:
           name: processed_data
           path: data/processed
@@ -65,10 +65,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Download Graphs Artifact  # Download the correct artifact
-        uses: actions/download-artifact@v3 # Corrected: v3 instead of v2
+      - name: Download Graphs Artifact
+        uses: actions/download-artifact@v4 # Updated to v4
         with:
-          name: graphs  # Name of the artifact containing graphs
+          name: graphs
           path: graphs
       - name: Deploy to Server
         run: |

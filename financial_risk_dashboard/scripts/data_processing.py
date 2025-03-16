@@ -12,7 +12,7 @@ PROCESSED_DATA_DIR = os.path.join(BASE_DIR, "financial_risk_dashboard", "data", 
 SQL_SCRIPTS_DIR = os.path.join(BASE_DIR, "financial_risk_dashboard", "sql")
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
-# Load environment variables
+# Loading environment variables
 load_dotenv()
 DB_CONFIG = {
     "host": os.getenv("DB_HOST"),
